@@ -1,0 +1,21 @@
+Rodar no powershell 
+ 
+$sobrs = Get-VBRBackupRepository -Scaleout
+$sobrReport = @()
+foreach ($sobr in $sobrs) {
+$extents = $sobr.Extent
+$totalSpace = $null
+$totalFreeSpace = $null
+foreach ($extent in $extents) {
+$repo = $extent.Repository
+$container = $repo.GetContainer()
+$totalSpace += [Math]::Round($container.CachedTotalSpace.InMegabytes / 1024, 1)
+$totalFreeSpace += [Math]::Round($container.CachedFreeSpace.InMegabytes / 1024, 1)
+}
+$sobrReport += $sobr | select Name, @{n='TotalSpace';e={$totalSpace}}, `
+@{n='FreeSpace';e={$totalFreeSpace}}
+}
+$sobrReport
+ 
+ 
+ [imagem]
